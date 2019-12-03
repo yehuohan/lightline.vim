@@ -23,6 +23,9 @@ function! lightline#update() abort
   let w = winnr()
   let s = winnr('$') == 1 && w > 0 ? [lightline#statusline(0)] : [lightline#statusline(0), lightline#statusline(1)]
   for n in range(1, winnr('$'))
+    if has_key(s:lightline, 'blacklist') && has_key(s:lightline.blacklist, getwinvar(n, '&ft'))
+      continue
+    endif
     call setwinvar(n, '&statusline', s[n!=w])
     call setwinvar(n, 'lightline', n!=w)
   endfor
