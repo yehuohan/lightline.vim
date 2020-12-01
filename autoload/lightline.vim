@@ -21,8 +21,14 @@ function! lightline#update() abort
     let w = winnr()
     let s = winnr('$') == 1 && w > 0 ? [lightline#statusline(0)] : [lightline#statusline(0), lightline#statusline(1)]
     for n in range(1, winnr('$'))
-      if has_key(s:lightline, 'blacklist') && has_key(s:lightline.blacklist, getwinvar(n, '&ft'))
-        continue
+      if has_key(s:lightline, 'fallback')
+        let ft = getwinvar(n, '&ft')
+        if has_key(s:lightline.fallback, ft)
+          if v:t_string == type(s:lightline.fallback[ft])
+            call setwinvar(n, '&statusline', s:lightline.fallback[ft])
+          endif
+          continue
+        endif
       endif
       call setwinvar(n, '&statusline', s[n!=w])
     endfor
